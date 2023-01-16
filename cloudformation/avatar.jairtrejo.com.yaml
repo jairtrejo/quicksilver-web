@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  StaticSite:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "static-site.yaml"
+      Parameters:
+        DomainName: avatar.jairtrejo.com
+        SubDomain: ""
+        SSLCertificateArn: arn:aws:acm:us-east-1:501965419031:certificate/0b9bca2d-cf0c-45ff-8d0d-b01eee8d1357
+        HostedZoneId: Z0431545UH073TJJS79M

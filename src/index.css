@@ -1,0 +1,148 @@
+@import "the-new-css-reset/css/reset.css";
+
+body {
+  font-family: "Avenir Next", "Helvetica", "Arial", Sans-serif;
+  font-size: 16px;
+  /*background-color: #ffb602;*/
+  background-color: #48a3d0;
+  color: #0b0709;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  font-size: 1.6rem;
+  border-bottom: 2px solid #0b0709;
+  margin-bottom: 1.2rem;
+}
+
+h1,
+p {
+  text-align: left;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+a {
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+button {
+  border: solid 2px #0b0709;
+  border-radius: 4px;
+  padding: 0.3rem;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  min-width: 8rem;
+}
+
+button:hover {
+  background-color: rgba(0,0,0,0.12);
+}
+
+button:active {
+  color: #3b3739;
+  background-color: transparent;
+  border: none;
+}
+
+input[type="text"] {
+  background-color: #f2e9c6;
+  padding: 0.3rem;
+  padding-left: 0.5rem;
+  border: solid 2px #0b0709;
+  border-radius: 4px;
+  flex: 1;
+  max-width: 512px;
+  text-align: left;
+}
+
+input[type="text"]::placeholder {
+  opacity: 0.6;
+  font-style: italic;
+  font-size: 95%;
+}
+
+h2 {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+  text-align: right;
+}
+
+.gallery ul {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(256px, 1fr));
+}
+
+.gallery li {
+  position: relative;
+}
+
+.gallery img {
+  border: solid 3px #f2e9c6;
+  cursor: pointer;
+  display: block;
+}
+
+.gallery .prompt {
+  display: none;
+}
+
+.gallery .prompt.active {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #e6323ba0;
+  padding: 1rem;
+  color: #f2e9c6;
+  font-style: italic;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.gallery .prompt p:last-child {
+  margin-bottom: 0;
+}
+
+@media screen and (min-width: 800px) {
+  main {
+    padding: 2rem 1rem;
+  }
+  form {
+    flex-direction: row;
+  }
+  button {
+    width: revert;
+  }
+}
