@@ -3,7 +3,6 @@
 body {
   font-family: "Avenir Next", "Helvetica", "Arial", Sans-serif;
   font-size: 16px;
-  /*background-color: #ffb602;*/
   background-color: #48a3d0;
   color: #0b0709;
 }
@@ -43,9 +42,11 @@ a:hover {
 form {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 1rem;
-  gap: 1rem;
+  column-gap: 1rem;
+  row-gap: 0.5rem;
 }
 
 button {
@@ -72,6 +73,12 @@ button:active {
   border: none;
 }
 
+button:disabled {
+  color: #3b3739;
+  background-color: rgba(0,0,0,0.08);
+  border-color: transparent;
+}
+
 input[type="text"] {
   background-color: #f2e9c6;
   padding: 0.3rem;
@@ -79,7 +86,6 @@ input[type="text"] {
   border: solid 2px #0b0709;
   border-radius: 4px;
   flex: 1;
-  max-width: 512px;
   text-align: left;
 }
 
@@ -87,6 +93,22 @@ input[type="text"]::placeholder {
   opacity: 0.6;
   font-style: italic;
   font-size: 95%;
+}
+
+.break {
+  width: 0;
+}
+
+p.error {
+  font-size: 85%;
+  flex-basis: 100%;
+  margin-bottom: 0;
+  height: 1.2rem;
+  line-height: 1.2rem;
+}
+
+strong {
+  font-weight: bold;
 }
 
 h2 {
@@ -141,8 +163,16 @@ h2 {
   }
   form {
     flex-direction: row;
+    margin: 0 auto;
+    max-width: 672px;
   }
   button {
     width: revert;
+  }
+  input[type=text] {
+    min-width: 512px;
+  }
+  p.error {
+    margin-bottom: 0.5rem;
   }
 }
