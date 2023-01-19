@@ -33,29 +33,12 @@ async function postRequest(url, { arg }) {
 }
 
 function App() {
-  const images = [
-    {
-      url: "sample.jpg",
-      prompt: "A picture of jairtrejo in the style of rembrandt",
-    },
-    {
-      url: "sample.jpg",
-      prompt: "A picture of jairtrejo in the style of rembrandt",
-    },
-    {
-      url: "sample.jpg",
-      prompt: "A picture of jairtrejo in the style of rembrandt",
-    },
-    {
-      url: "sample.jpg",
-      prompt: "A picture of jairtrejo in the style of rembrandt",
-    },
-  ];
+  const images = [];
 
   const [active, setActive] = useState(new Set());
   const suggestionInput = useRef(null);
   const {
-    data = {id: ""},
+    data = { id: "" },
     trigger: suggestPrompt,
     isMutating,
     error,
@@ -68,6 +51,33 @@ function App() {
 
     e.preventDefault();
   }
+
+  const gallery = (
+    <section className="gallery">
+      <h2>January, 2023</h2>
+      <ul>
+        {images.map(({ url, prompt }, i) => (
+          <li key={i}>
+            <img
+              src={url}
+              alt={prompt}
+              onClick={() => setActive((active) => new Set([...active, i]))}
+            />
+            <div
+              className={cx(["prompt", active.has(i) ? "active" : null])}
+              onClick={() =>
+                setActive(
+                  (active) => new Set([...active].filter((a) => a !== i))
+                )
+              }
+            >
+              <p>{prompt}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
 
   return (
     <>
@@ -89,13 +99,15 @@ function App() {
           <button disabled={isMutating} type="submit">
             {isMutating ? "Sending..." : "Suggest"}
           </button>
-          <p className="error">
+          <p className="status">
             {!isMutating && error ? (
               <>
                 <strong>Error:</strong> {error.message}
               </>
             ) : null}
-            {data.id && !isMutating && !error ? 'Thank you for your suggestion!' : null}
+            {data.id && !isMutating && !error
+              ? "Thank you for your suggestion!"
+              : null}
           </p>
         </form>
         <p>
@@ -104,30 +116,7 @@ function App() {
             my mastodon profile picture.
           </a>
         </p>
-        <section className="gallery">
-          <h2>January, 2023</h2>
-          <ul>
-            {images.map(({ url, prompt }, i) => (
-              <li key={i}>
-                <img
-                  src={url}
-                  alt={prompt}
-                  onClick={() => setActive((active) => new Set([...active, i]))}
-                />
-                <div
-                  className={cx(["prompt", active.has(i) ? "active" : null])}
-                  onClick={() =>
-                    setActive(
-                      (active) => new Set([...active].filter((a) => a !== i))
-                    )
-                  }
-                >
-                  <p>{prompt}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {images.length > 0 ? gallery : null}
       </main>
     </>
   );

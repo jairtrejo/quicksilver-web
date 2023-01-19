@@ -99,7 +99,7 @@ input[type="text"]::placeholder {
   width: 0;
 }
 
-p.error {
+p.status {
   font-size: 85%;
   flex-basis: 100%;
   margin-bottom: 0;
@@ -172,7 +172,7 @@ h2 {
   input[type=text] {
     min-width: 512px;
   }
-  p.error {
+  p.status {
     margin-bottom: 0.5rem;
   }
 }
