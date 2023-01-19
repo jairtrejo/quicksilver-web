@@ -95,7 +95,7 @@ function App() {
                 <strong>Error:</strong> {error.message}
               </>
             ) : null}
-            {data && !isMutating && !error ? 'Thank you for your suggestion!' : null}
+            {data.id && !isMutating && !error ? 'Thank you for your suggestion!' : null}
           </p>
         </form>
         <p>
