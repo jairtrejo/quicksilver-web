@@ -21,6 +21,13 @@ Resources:
       AccessControl: Private
       BucketName:
         !If [IsNakedDomain, !Ref DomainName, !Sub "${SubDomain}.${DomainName}"]
+
+  AvatarBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: Private
+      BucketName: !Sub "avatars.${DomainName}"
+
   SiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -33,11 +40,24 @@ Resources:
             Resource: !Sub "${SiteBucket.Arn}/*"
             Principal:
               CanonicalUser: !GetAtt SiteDistributionAccessIdentity.S3CanonicalUserId
+  AvatarBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref AvatarBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: !Sub "${AvatarBucket.Arn}/*"
+            Principal:
+              CanonicalUser: !GetAtt SiteDistributionAccessIdentity.S3CanonicalUserId
   SiteDistributionAccessIdentity:
     Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: !Sub "Access identity for ${DomainName} distribution"
+
   SiteDistribution:
     Type: "AWS::CloudFront::Distribution"
     Properties:
@@ -50,14 +70,23 @@ Resources:
             Id: !Ref SiteBucket
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${SiteDistributionAccessIdentity}"
+          - DomainName: !GetAtt AvatarBucket.DomainName
+            Id: !Ref AvatarBucket
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${SiteDistributionAccessIdentity}"
         DefaultCacheBehavior:
           TargetOriginId: !Ref SiteBucket
-          ForwardedValues:
-            QueryString: true
-            QueryStringCacheKeys:
-              - v
           ViewerProtocolPolicy: redirect-to-https
           Compress: true
+          ForwardedValues:
+            QueryString: false
+        CacheBehaviors:
+          - TargetOriginId: !Ref AvatarBucket
+            PathPattern: /images/*.*
+            ViewerProtocolPolicy: redirect-to-https
+            Compress: true
+            ForwardedValues:
+              QueryString: false
         CustomErrorResponses:
           - ErrorCode: 404
             ErrorCachingMinTTL: 3600
@@ -86,3 +115,8 @@ Resources:
       AliasTarget:
         HostedZoneId: Z2FDTNDATAQYW2
         DNSName: !GetAtt SiteDistribution.DomainName
+
+Outputs:
+  AvatarBucket:
+    Description: "Bucket for avatar images"
+    Value: !Ref AvatarBucket
