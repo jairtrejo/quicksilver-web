@@ -1,8 +1,23 @@
 import { useRef, useState } from "react";
+import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 
 function cx(classnames) {
   return classnames.filter((e) => e).join(" ");
+}
+
+async function getRequest(url) {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  let data = null;
+  try {
+    const response = await fetch(baseUrl + url);
+    data = await response.json();
+  } catch {
+    throw new Error("Backend is not responsive.");
+  }
+
+  return data;
 }
 
 async function postRequest(url, { arg }) {
@@ -33,8 +48,6 @@ async function postRequest(url, { arg }) {
 }
 
 function App() {
-  const images = [];
-
   const [active, setActive] = useState(new Set());
   const suggestionInput = useRef(null);
   const {
@@ -44,6 +57,12 @@ function App() {
     error,
   } = useSWRMutation("/prompt", postRequest, { throwOnError: false });
 
+  const { data: galleryData } = useSWR("/prompt", getRequest, {
+    fallbackData: [],
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+
   function submitSuggestion(e) {
     const prompt = suggestionInput.current.value;
 
@@ -52,22 +71,32 @@ function App() {
     e.preventDefault();
   }
 
+  let latestDate = null;
+  if (galleryData.length > 0) {
+    latestDate = new Date();
+    latestDate.setTime(galleryData[0].usedAt * 1000);
+  }
+
   const gallery = (
     <section className="gallery">
-      <h2>January, 2023</h2>
+      <h2>
+        {latestDate
+          ? `${latestDate.getMonth() + 1}/${latestDate.getFullYear()}`
+          : null}
+      </h2>
       <ul>
-        {images.map(({ url, prompt }, i) => (
-          <li key={i}>
+        {galleryData.map(({ id, prompt }) => (
+          <li key={id}>
             <img
-              src={url}
+              src={`/images/${id}.jpg`}
               alt={prompt}
-              onClick={() => setActive((active) => new Set([...active, i]))}
+              onClick={() => setActive((active) => new Set([...active, id]))}
             />
             <div
-              className={cx(["prompt", active.has(i) ? "active" : null])}
+              className={cx(["prompt", active.has(id) ? "active" : null])}
               onClick={() =>
                 setActive(
-                  (active) => new Set([...active].filter((a) => a !== i))
+                  (active) => new Set([...active].filter((a) => a !== id))
                 )
               }
             >
@@ -116,7 +145,7 @@ function App() {
             my mastodon profile picture.
           </a>
         </p>
-        {images.length > 0 ? gallery : null}
+        {galleryData.length > 0 ? gallery : null}
       </main>
     </>
   );
